@@ -1,0 +1,241 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "XMeme",
+      "description": "XMemes Application API"
+    },
+    "host": "localhost:8081",
+    "basePath": "/",
+    "tags": [
+      {
+        "name": "Memes",
+        "description": "API for Memes in the system"
+      }
+    ],
+    "schemes": [
+      "http"
+    ],
+    "consumes": [
+      "application/json"
+    ],
+    "produces": [
+      "application/json"
+    ],
+    "paths": {
+      "/memes": {
+        "post": {
+          "tags": [
+            "Memes"
+          ],
+          "summary":"Post a new Meme",
+          "description": "Create new meme in system",
+          "parameters": [
+            {
+              "name": "meme",
+              "in": "body",
+              "description": "New Meme that we want to create",
+              "schema": {
+                "$ref": "#/definitions/Meme"
+              }
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Id of the new meme created",
+              "schema": {
+                "$ref": "#/definitions/postMeme"
+              }
+            }
+          }
+        },
+            "get": {
+                "tags": [
+                  "Memes"
+                ],
+                "summary": "Get all memes in system",
+                "description": "Get all memes availanle in system",
+                "responses": {
+                  "200": {
+                    "description": "OK",
+                    "schema": {
+                      "$ref": "#/definitions/getMemes"
+                    }
+                  }
+                }
+              }
+ 
+      },
+      "/memes/{id}":{
+          "get":{
+              "summary":"Get specific meme by ID",
+              "tags":["Memes"],
+              "description": "Fetch meme based on request id",
+              "parameters":[
+              {    "in":"memeId",
+                  "name":"memeId",
+                  "schema":{
+                    "type": "integer","uniqueItems": true
+                },
+                "required":"true",
+                "description":"Id of the meme"}
+              ],
+              "produces": [
+                "application/json"
+              ],
+              "responses":{
+                "200": {
+                    "description": "OK",
+                        "schema": {
+                          "$ref": "#/definitions/memeResponse"
+                        }
+             
+             
+                  }
+    
+              }
+          },
+          "patch":{
+            "summary":"Update existing Meme",
+            "tags":["Memes"],
+            "description": "Update meme based on request id and parameters",
+            "parameters":[
+                {    "in":"memeId",
+                    "name":"memeId",
+                    "schema":{
+                      "type": "integer","uniqueItems": true
+                  },
+                  "required":"true",
+                  "description":"Id of the meme"},
+                  {
+                    "body": "meme",
+                    "in": "body",
+                    "description": "Update parameters to meme",
+                    "schema": {
+                      "$ref": "#/definitions/patchRequest"
+                    }
+                  }
+                  ],
+                  "responses":{
+                    "204":{
+                        "description": "Meme Update succesful"
+                      }
+        
+                }
+
+          }
+
+
+      }
+
+    
+    },
+    "definitions": {
+      "Meme": {
+        "required": [
+          "name",
+          "url",
+          "caption"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string"
+          }
+         
+        }
+      },
+      "postMeme":{
+        "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+                "type": "integer","uniqueItems": true
+            }
+           
+          }
+
+      },
+      "getMemes":{
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "url",
+          "caption"
+        ],
+        "properties": {
+          "id": {
+            "type": "int"
+          },
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string"
+          }
+        },
+        "example": [{
+          "id": 1,
+          "name": "MS Dhoni",
+          "url": "https://images.pexels.com/photos/3573382/pexels-photo-3573382.jpeg",
+          "caption": "Meme for my place"
+        }]
+      }, 
+      "memeResponse":{
+          "type":"object",
+          "required":[
+              "id",
+              "name",
+              "url",
+              "caption"
+          ],
+          "properties":{
+            "id": {
+                "type": "int"
+              },
+              "name":{
+                  "type":"string"
+              },
+              "url":{
+                  "type":"string"
+              },
+              "caption":"string"
+          },
+          "example":{
+            "id": 1,
+            "name": "MS Dhoni",
+            "url": "https://images.pexels.com/photos/3573382/pexels-photo-3573382.jpeg",
+            "caption": "Meme for my place"
+          }
+      },
+      "patchRequest":{
+          "type":"object",
+          "required":[
+              "url",
+              "caption"
+          ],
+          "properties":{
+              "url":"string",
+              "caption":"string"
+          },
+          "example":{
+            "url": "new_url",
+            "caption": "new_caption"
+          }
+      }
+     
+    }
+  }
