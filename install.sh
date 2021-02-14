@@ -2,11 +2,9 @@
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
 . ~/.nvm/nvm.sh
 nvm install node
-sudo apt install -y npm
 node -e "console.log('Running Node.js ' + process.version)"
-
-
-
+sleep 30
+sudo apt install -y npm
 # Steps to install MongoDB
 wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -
 
@@ -14,3 +12,6 @@ echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongod
 sudo apt update
 sudo apt install -y mongodb-org
 
+sleep 10
+
+sudo apt install -y npm
