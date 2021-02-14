@@ -1,6 +1,8 @@
 .form{
     width: 30%;
     margin:50px 0;
+
+
 }
 
 
@@ -11,3 +13,9 @@
 
     }
   }
+
+.ui.form{
+    width: 100%;
+  }
+
+  

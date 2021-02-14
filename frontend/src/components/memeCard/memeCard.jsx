@@ -4,18 +4,17 @@ import classes from "./styles.module.css";
 
 const memeCard = (props) => {
   return (
-    <div className={classes["memeCard"]}>
+    <div id={props.id} className={classes["memeCard"]}>
       <Card>
         <Card.Content>
-
           <div>
             <Icon name="user outline" />{" "}
             <Card.Header className={classes.header}>
               {props.name.charAt(0).toUpperCase() + props.name.slice(1)}
             </Card.Header>
-          <div className={classes.editIcon}>
-          <Icon name='edit outline' />   
-          </div>
+            <div onClick={props.showModal} className={classes.editIcon}>
+              <Icon id={props.id} name="edit outline" />
+            </div>
           </div>
 
           <Card.Meta>

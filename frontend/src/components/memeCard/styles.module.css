@@ -26,4 +26,9 @@ display: inline;
 }
 .editIcon{
     float:right;
+
+}
+
+.editIcon:hover{
+    cursor: pointer;
 }

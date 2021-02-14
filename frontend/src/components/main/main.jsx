@@ -2,9 +2,10 @@ import React from "react";
 import MemeCard from "../memeCard/memeCard";
 import MemeList from "../memeList/memeList";
 import MemeForm from "../memeForm/memeForm";
-import { Container } from "semantic-ui-react";
+import { Modal } from "semantic-ui-react";
 import classes from "./styles.module.css";
 import Navbar from "../common/navbar/navbar";
+import { message } from "antd";
 
 class Main extends React.Component {
   /**
@@ -17,6 +18,8 @@ class Main extends React.Component {
   state = {
     loading: false,
     firstHundredMemes: null,
+    showModal: false,
+    editMemeID: "",
   };
   /**
    *
@@ -52,6 +55,49 @@ class Main extends React.Component {
         console.log(`Error occured during fetch ${err}`);
       });
   };
+  /**
+   *
+   * @param {boolean} showModal
+   * boolean value to show modal or not
+   */
+  showModal = (event, showModal) => {
+    showModal
+      ? this.setState({ showModal: true, editMemeID: event.target.id })
+      : this.setState({ showModal: false, editMemeID: "" });
+  };
+
+  editMeme = async (postData) => {
+    console.log(postData);
+    console.log(this.state.editMemeID);
+
+    this.setState({ loading: true });
+
+    try {
+      const updateMeme = await fetch(
+        encodeURI(
+          `http://localhost:8081/memes/${this.state.editMemeID}`
+        ),
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            url: postData.url,
+            caption: postData.caption,
+          }),
+        }
+      ).then((res) => {
+        if (res.status === 204) {
+          message.success("Meme Update succesful");
+        } else if (res.status > 400) {
+          message.error("Unable to update meme");
+        }
+      });
+    } catch (error) {
+      message.error("Error accured during API");
+    }
+    this.fetchFirstHundredMemes();
+    this.showModal(false, "");
+  };
 
   /**
    *
@@ -61,11 +107,14 @@ class Main extends React.Component {
   submitMeme = async (postData) => {
     this.setState({ loading: true });
 
-    const memes = await fetch(encodeURI(`http://localhost:8081/memes`), {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(postData),
-    })
+    const memes = await fetch(
+      encodeURI(`http://localhost:8081/memes`),
+      {
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(postData),
+      }
+    )
       .then((res) => {
         return res.json();
       })
@@ -92,12 +141,23 @@ class Main extends React.Component {
           <MemeForm submitMeme={this.submitMeme} />
           <div className={classes.memeListContainer}>
             {this.state.firstHundredMemes ? (
-              <MemeList firstHundredMemes={this.state.firstHundredMemes} />
+              <MemeList
+                showModal={this.showModal}
+                firstHundredMemes={this.state.firstHundredMemes}
+              />
             ) : (
               ""
             )}
           </div>
         </div>
+        <Modal dimmer={true} open={this.state.showModal}>
+          <MemeForm
+            editMeme={this.editMeme}
+            showModal={this.showModal}
+            modal={true}
+            submitMeme={this.submitMeme}
+          />
+        </Modal>
       </div>
     );
   }

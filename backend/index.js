@@ -31,12 +31,13 @@ const memesSchema = require("./models/memes");
  */
 
 app.patch("/memes/:id", (req, res) => {
-    console.log(`patch request received`)
-    let isSuccess = false;
+  console.log(req.params.id);
+  if(req.params.id!==undefined){
+
+    console.log("/patch is called")
     memesSchema.findById(req.params.id, (err, db_res) => {
       if (err) {
-        console.log("error 1");
-        return res.status(400).json({
+        return res.status(404).json({
           success: false,
         });
       } else if (db_res) {
@@ -48,24 +49,28 @@ app.patch("/memes/:id", (req, res) => {
         }
         db_res.save((err, db_res) => {
           if (err) {
-            console.log("error 2");
             return res.status(404).json({
               success: false,
             });
           } else {
-            console.log("success 1");
-            return res.status(200).json({
+            return res.status(204).json({
               success: true,
             });
           }
         });
       } else {
-        console.log("Id does not exist");
         return res.status(404).json({
           success: false,
         });
       }
     });
+
+  } else{
+    return res.status(400).json({
+      success: false,
+    });
+  }
+
   });
 
 /**
@@ -75,7 +80,6 @@ app.patch("/memes/:id", (req, res) => {
  * API returns array of first 100
  */
 app.get("/memes", (req, res) => {
-  console.log(`Get /memes is called`);
   try {
     let topHunderedMemes = memesSchema
       .find()
@@ -95,7 +99,7 @@ app.get("/memes", (req, res) => {
         );
       });
   } catch (error) {
-    return res.status(400).json({
+    return res.status(404).json({
       success: false,
     });
   }
@@ -107,26 +111,34 @@ app.get("/memes", (req, res) => {
  * API returns boolean value with JSON of requsted MEME
  */
 app.get("/memes/:id", (req, res) => {
-  try {
-    memesSchema.findById(req.params.id, (err, db_res) => {
-      if (err) {
-        return res.status(400).json({
-          success: false,
-        });
-      } else {
-        return res.status(200).json({
-          id: db_res.id,
-          name: db_res.owner,
-          url: db_res.url,
-          caption: db_res.caption,
-        });
-      }
-    });
-  } catch (error) {
+  if(req.params.id){
+    try {
+      memesSchema.findById(req.params.id, (err, db_res) => {
+        if (err) {
+          return res.status(400).json({
+            success: false,
+          });
+        } else {
+          return res.status(200).json({
+            id: db_res.id,
+            name: db_res.owner,
+            url: db_res.url,
+            caption: db_res.caption,
+          });
+        }
+      });
+    } catch (error) {
+      return res.status(404).json({
+        success: false,
+      });
+    }
+
+  } else{
     return res.status(400).json({
       success: false,
     });
   }
+
 });
 /**
  * Store new meme to DB
@@ -167,7 +179,7 @@ app.post("/memes", (req, res) => {
                   success: false,
                 });
               } else {
-                return res.status(200).json({
+                return res.status(201).json({
                   id: newMeme.id,
                 });
               }
@@ -176,7 +188,7 @@ app.post("/memes", (req, res) => {
         }
       });
     } catch (error) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
       });
     }

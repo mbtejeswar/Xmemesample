@@ -36,7 +36,7 @@
               "in": "body",
               "description": "New Meme that we want to create",
               "schema": {
-                "$ref": "#/definitions/Meme"
+                "$ref": "#/definitions/Memes"
               }
             }
           ],
@@ -44,10 +44,22 @@
             "application/json"
           ],
           "responses": {
-            "200": {
+            "201": {
               "description": "Id of the new meme created",
               "schema": {
-                "$ref": "#/definitions/postMeme"
+                "$ref": "#/definitions/postMemeResponse"
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "schema": {
+                "$ref": "#/definitions/fail"
+              }
+            },
+            "404": {
+              "description": "Meme Not Found",
+              "schema": {
+                "$ref": "#/definitions/fail"
               }
             }
           }
@@ -63,6 +75,12 @@
                     "description": "OK",
                     "schema": {
                       "$ref": "#/definitions/getMemes"
+                    }
+                  },
+                  "404": {
+                    "description": "Unexpected backend error",
+                    "schema": {
+                      "$ref": "#/definitions/fail"
                     }
                   }
                 }
@@ -90,7 +108,23 @@
                 "200": {
                     "description": "OK",
                         "schema": {
-                          "$ref": "#/definitions/memeResponse"
+                          "$ref": "#/definitions/meme"
+                        }
+             
+             
+                  },
+                  "400": {
+                    "description": "Bad Request",
+                        "schema": {
+                          "$ref": "#/definitions/fail"
+                        }
+             
+             
+                  },
+                  "404": {
+                    "description": "Unexpected Error in backend",
+                        "schema": {
+                          "$ref": "#/definitions/fail"
                         }
              
              
@@ -122,6 +156,22 @@
                   "responses":{
                     "204":{
                         "description": "Meme Update succesful"
+                      },
+                      "400": {
+                        "description": "Bad Request",
+                            "schema": {
+                              "$ref": "#/definitions/fail"
+                            }
+                 
+                 
+                      },
+                      "404": {
+                        "description": "Unexpected Error in backend",
+                            "schema": {
+                              "$ref": "#/definitions/fail"
+                            }
+                 
+                 
                       }
         
                 }
@@ -134,7 +184,7 @@
     
     },
     "definitions": {
-      "Meme": {
+      "Memes": {
         "required": [
           "name",
           "url",
@@ -153,7 +203,7 @@
          
         }
       },
-      "postMeme":{
+      "postMemeResponse":{
         "required": [
             "id"
           ],
@@ -166,7 +216,7 @@
 
       },
       "getMemes":{
-        "type": "object",
+        "type": "Array",
         "required": [
           "id",
           "name",
@@ -194,7 +244,7 @@
           "caption": "Meme for my place"
         }]
       }, 
-      "memeResponse":{
+      "meme":{
           "type":"object",
           "required":[
               "id",
@@ -212,7 +262,7 @@
               "url":{
                   "type":"string"
               },
-              "caption":"string"
+              "caption":{"type":"string"}
           },
           "example":{
             "id": 1,
@@ -228,13 +278,27 @@
               "caption"
           ],
           "properties":{
-              "url":"string",
-              "caption":"string"
+              "url":{"type":"string"},
+              "caption":{"type":"string"}
           },
           "example":{
             "url": "new_url",
             "caption": "new_caption"
           }
+      },
+      "fail":{
+        "type":"object",
+        "required": [
+            "success"
+          ],
+          "properties": {
+            "success": {
+                "type": "boolean"
+            }
+          
+           
+          },
+          "example":{"success":false}
       }
      
     }

@@ -3,6 +3,7 @@ import 'semantic-ui-css/semantic.min.css'
 import MemeList from './components/memeList/memeList';
 import Main from './components/main/main';
 import 'antd/dist/antd.css'; 
+import './App.css';
 function App() {
   return (
     <div className="App">

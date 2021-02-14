@@ -1,9 +1,8 @@
-import { Button, Form , Message} from "semantic-ui-react";
+import { Button, Form, Message } from "semantic-ui-react";
 import { React, useState } from "react";
-import classes from './styles.module.css';
-import {message} from 'antd'
-
-
+import classes from "./styles.module.css";
+import { message } from "antd";
+import Aux from "../HOC/aux";
 
 const MemeForm = (props) => {
   /**
@@ -11,7 +10,7 @@ const MemeForm = (props) => {
    * stores the value of memeOwner on change in input box
    * @property {string} caption
    * caption is stored in caption variable onchange
-   * @property {string} memeUrl 
+   * @property {string} memeUrl
    */
   const [memeOwner, setMemeOwner] = useState("");
   const [caption, setMemeCaption] = useState("");
@@ -32,62 +31,72 @@ const MemeForm = (props) => {
   };
 
   /**
-   * 
-   * @param {boolean} error 
-   * boolean value to store the error flag of API call 
-   * @param {object} response 
+   *
+   * @param {boolean} error
+   * boolean value to store the error flag of API call
+   * @param {object} response
    * Input response to check validation
    */
-  const checkValidation = (error, response)=>{
-    if(!error){
-      return true
+  const checkValidation = (error, response) => {
+    if (!error) {
+      return true;
     }
-  }
+  };
 
   /**
    * Clear all the input values on submit
    */
 
-  const clearValues = ()=>{
-    setMemeOwner('')
-    setMemeCaption('')
-    setmemeUrl('')
-  }
+  const clearValues = () => {
+    setMemeOwner("");
+    setMemeCaption("");
+    setmemeUrl("");
+  };
 
-  const formValidation =()=>{
-    if(memeOwner!=="" && memeUrl!="" && caption!=""){
-      return true 
+  const formValidation = () => {
+    if (memeOwner !== "" && memeUrl != "" && caption != "") {
+      return true;
     } else {
-      message.error('All fields are mandatory. Please check again and submit')
-    
-      return false
-    };
-  }
+      message.error("All fields are mandatory. Please check again and submit");
+
+      return false;
+    }
+  };
+
+  const editMeme = () => {
+    let postData = { name: memeOwner, url: memeUrl, caption: caption };
+    props.editMeme(postData);
+  };
   /**
    * Submit the meme on Submit button to backend
    */
   const submitMeme = () => {
     let validation = formValidation();
-    
-    let postData = {name:memeOwner, url:memeUrl,caption:caption}
-    if(validation){
+
+    let postData = { name: memeOwner, url: memeUrl, caption: caption };
+    if (validation) {
       props.submitMeme(postData);
     }
-    
+
     clearValues();
   };
   return (
-    <Form className={classes['form']}>
-  
+    <Form className={classes["form"]}>
       <Form.Field>
-        <label>Meme Owner</label>
-        <input
-          value={memeOwner}
-          name="owner"
-          onChange={setValue}
-          placeholder="Enter your full name"
-        />
-        
+        {!props.modal ? (
+          <Aux>
+            {" "}
+            <label>Meme Owner</label>{" "}
+            <input
+              value={memeOwner}
+              name="owner"
+              onChange={setValue}
+              placeholder="Enter your full name"
+            />{" "}
+          </Aux>
+        ) : (
+          ""
+        )}
       </Form.Field>
       <Form.Field>
         <label>Caption</label>
@@ -107,14 +116,17 @@ const MemeForm = (props) => {
           placeholder="Enter URL of your meme here"
         />
       </Form.Field>
-      <Message
-      warning
-      header='Could you check something!'
-      list={[
-        'That e-mail has been subscribed, but you have not yet clicked the verification link in your e-mail.',
-      ]}
-    />
-      <Button onClick={submitMeme} type="submit">
+      {props.modal ? (
+        <Aux>
+          <Button onClick={() => props.showModal(false)} type="cancel">
+            {" "}
+            Cancel{" "}
+          </Button>{" "}
+        </Aux>
+      ) : (
+        ""
+      )}
+      <Button onClick={props.modal ? editMeme : submitMeme} type="submit">
         Submit
       </Button>
     </Form>
